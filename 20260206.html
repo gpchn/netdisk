@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>情况说明</title>
+    <style>
+      :root {
+        --official-red: #de2910;
+        --bg-color: #f0f2f5;
+        --paper-color: #ffffff;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        margin: 0;
+        padding: 20px;
+        font-family: "FangSong", "STFangsong", "FangSong_GB2312", serif;
+        display: flex;
+        justify-content: center;
+        color: #000;
+      }
+
+      .paper {
+        background-color: var(--paper-color);
+        width: 100%;
+        max-width: 210mm;
+        min-height: 100mm;
+        padding: 25mm 20mm 20mm 20mm;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        box-sizing: border-box;
+      }
+
+      .header {
+        text-align: center;
+        font-family: "SimHei", "Heiti SC", sans-serif;
+        color: var(--official-red);
+        margin-bottom: 30px;
+        border-bottom: 2px solid var(--official-red);
+        padding-bottom: 10px;
+        line-height: 1.4;
+      }
+
+      .org-name {
+        font-size: 22pt;
+        font-weight: normal;
+        letter-spacing: 2px;
+      }
+
+      .doc-code {
+        font-size: 16pt;
+        margin-top: 5px;
+        font-family: "FangSong", "STFangsong", serif;
+        color: #000;
+        text-align: right;
+        margin-bottom: 40px;
+      }
+
+      .doc-title {
+        text-align: center;
+        font-family: "SimHei", "Heiti SC", sans-serif;
+        font-size: 22pt;
+        font-weight: normal;
+        margin-bottom: 40px;
+        line-height: 1.5;
+      }
+
+      .content {
+        font-size: 16pt;
+        line-height: 30px;
+        text-align: justify;
+        text-indent: 2em;
+      }
+
+      .footer {
+        margin-top: 40px;
+        text-align: right;
+        line-height: 30px;
+        font-size: 16pt;
+      }
+
+      .page-number {
+        position: absolute;
+        bottom: 10mm;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: "SimHei", sans-serif;
+        font-size: 10.5pt;
+        color: #666;
+      }
+
+      @media (max-width: 768px) {
+        .paper {
+          padding: 20px 15px;
+          width: 100%;
+        }
+        .org-name {
+          font-size: 18pt;
+        }
+        .doc-title {
+          font-size: 18pt;
+        }
+        .content,
+        .footer {
+          font-size: 14pt;
+          line-height: 1.6;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="paper">
+      <!-- 版头 -->
+      <div class="header">
+        <div class="org-name">邯郸市第四中学政治思想教研组</div>
+      </div>
+
+      <!-- 文号 -->
+      <div class="doc-code">温政研〔2026〕01号</div>
+
+      <!-- 标题 -->
+      <h1 class="doc-title">关于期末考核后师生互动非典型性现象的说明</h1>
+
+      <!-- 正文：申论风，极度委婉，第三人称 -->
+      <div class="content">
+        <p>
+          针对期末考核后师生互动环节出现的非典型性离场现象，经深入复盘，现将有关情况汇报如下：本学期，该生在温老师持续且高标准的严管厚爱下，长期处于紧绷的受教状态，心理承压趋于临界值。期末节点，为避免精神防线过载，该生潜意识启动了自我防御机制，采取了一次短暂的物理位移策略，旨在通过非言语形式实现内在情绪势能的释放与再平衡。该行为系特定时空下的应激性自我调适，并非对师生关系的根本性否定。鉴于此，恳请温老师秉持容错机制，对此次情绪出口的尝试予以豁免。该生已明确表态，将即刻重启常态化互动程序，在下学期持续保持教学相长的良性循环。
+        </p>
+      </div>
+
+      <!-- 落款 -->
+      <div class="footer">
+        <p>说明人：甘昭林</p>
+        <p>2026年2月6日</p>
+      </div>
+
+      <div class="page-number">- 1 -</div>
+    </div>
+  </body>
+</html>
