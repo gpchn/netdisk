@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>岁次丙午 · 元正贺启</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0d0a08;
+      --bg-warm: #1a0f0a;
+      --paper: #f8f3e8;
+      --paper-dark: #e8dcc8;
+      --ink: #2a1810;
+      --vermilion: #b33a3a;
+      --gold: #c9a227;
+      --gold-light: #e8d5a3;
+      --seal-red: #c41e3a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Noto Serif SC', serif;
+      background: var(--bg-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--ink);
+    }
+
+    /* 背景画布 */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* 主容器 */
+    .container {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 卷轴容器 */
+    .scroll-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      opacity: 0;
+      transform: scaleY(0.1);
+      transform-origin: top center;
+      animation: scrollUnfold 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s forwards;
+    }
+
+    @keyframes scrollUnfold {
+      to {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+    }
+
+    /* 卷轴顶部装饰 */
+    .scroll-top, .scroll-bottom {
+      height: 24px;
+      background: linear-gradient(90deg, 
+        #5c3d2e 0%, 
+        #8b5a3c 15%, 
+        #a0674b 50%, 
+        #8b5a3c 85%, 
+        #5c3d2e 100%
+      );
+      border-radius: 4px;
+      position: relative;
+      box-shadow: 
+        0 2px 8px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
+    .scroll-top::before, .scroll-top::after,
+    .scroll-bottom::before, .scroll-bottom::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      background: radial-gradient(circle at 40% 40%, 
+        #d4a574 0%, 
+        #a0674b 50%, 
+        #6b4423 100%
+      );
+      border-radius: 50%;
+      box-shadow: 
+        0 2px 6px rgba(0,0,0,0.4),
+        inset 0 -2px 4px rgba(0,0,0,0.3);
+    }
+
+    .scroll-top::before, .scroll-bottom::before { left: -8px; }
+    .scroll-top::after, .scroll-bottom::after { right: -8px; }
+
+    .scroll-bottom {
+      margin-top: -1px;
+    }
+
+    /* 信纸主体 */
+    .letter-paper {
+      background: linear-gradient(180deg, 
+        var(--paper) 0%, 
+        var(--paper-dark) 100%
+      );
+      padding: 32px 24px;
+      position: relative;
+      box-shadow: 
+        0 0 60px rgba(201, 162, 39, 0.15),
+        inset 0 0 80px rgba(0,0,0,0.03);
+      overflow: hidden;
+    }
+
+    /* 纸张纹理 */
+    .letter-paper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+    }
+
+    /* 边框装饰 */
+    .letter-paper::after {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      border: 1px solid rgba(180, 140, 80, 0.3);
+      pointer-events: none;
+    }
+
+    /* 角落装饰 */
+    .corner {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      opacity: 0;
+      animation: cornerFade 0.6s ease 1.8s forwards;
+    }
+
+    .corner svg {
+      width: 100%;
+      height: 100%;
+      fill: none;
+      stroke: var(--gold);
+      stroke-width: 1;
+    }
+
+    .corner-tl { top: 16px; left: 16px; }
+    .corner-tr { top: 16px; right: 16px; transform: scaleX(-1); }
+    .corner-bl { bottom: 16px; left: 16px; transform: scaleY(-1); }
+    .corner-br { bottom: 16px; right: 16px; transform: scale(-1); }
+
+    @keyframes cornerFade {
+      to { opacity: 0.6; }
+    }
+
+    /* 标题 */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 1s forwards;
+    }
+
+    .year-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.5rem;
+      color: var(--vermilion);
+      letter-spacing: 0.3em;
+      margin-bottom: 8px;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .divider-line {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .divider-symbol {
+      color: var(--gold);
+      font-size: 0.8rem;
+    }
+
+    /* 称谓 */
+    .salutation {
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 1.2s forwards;
+    }
+
+    .salutation p {
+      font-size: 1rem;
+      line-height: 2;
+      text-indent: 0;
+      color: var(--ink);
+    }
+
+    /* 正文段落 */
+    .paragraph {
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    .paragraph:nth-child(1) { animation-delay: 1.4s; }
+    .paragraph:nth-child(2) { animation-delay: 1.6s; }
+    .paragraph:nth-child(3) { animation-delay: 1.8s; }
+    .paragraph:nth-child(4) { animation-delay: 2s; }
+
+    .paragraph p {
+      font-size: 0.95rem;
+      line-height: 2.2;
+      text-indent: 2em;
+      text-align: justify;
+      color: var(--ink);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 落款 */
+    .signature {
+      text-align: right;
+      margin-top: 28px;
+      padding-right: 1em;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 2.2s forwards;
+    }
+
+    .signature p {
+      font-size: 0.9rem;
+      line-height: 2;
+      color: var(--ink);
+    }
+
+    /* 印章 */
+    .seal-container {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      animation: sealStamp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) 2.6s forwards;
+    }
+
+    .seal {
+      width: 56px;
+      height: 56px;
+      border: 2px solid var(--seal-red);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(196, 30, 58, 0.08);
+      transform: rotate(-5deg);
+      position: relative;
+    }
+
+    .seal::before {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border: 1px solid var(--seal-red);
+      opacity: 0.6;
+    }
+
+    .seal-text {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.4rem;
+      color: var(--seal-red);
+      writing-mode: vertical-rl;
+      letter-spacing: 0.1em;
+    }
+
+    @keyframes sealStamp {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) scale(2) rotate(-5deg);
+      }
+      60% {
+        opacity: 1;
+        transform: translateX(-50%) scale(0.9) rotate(-5deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1) rotate(-5deg);
+      }
+    }
+
+    /* 底部日期 */
+    .date-footer {
+      text-align: center;
+      margin-top: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 2.8s forwards;
+    }
+
+    .date-footer p {
+      font-size: 0.85rem;
+      color: rgba(42, 24, 16, 0.6);
+      letter-spacing: 0.1em;
+    }
+
+    /* 底部祝福语 */
+    .blessing {
+      text-align: center;
+      margin-top: 32px;
+      opacity: 0;
+      animation: blessingGlow 1s ease 3s forwards;
+    }
+
+    .blessing-text {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.8rem;
+      color: var(--gold);
+      text-shadow: 
+        0 0 20px rgba(201, 162, 39, 0.4),
+        0 0 40px rgba(201, 162, 39, 0.2);
+      letter-spacing: 0.3em;
+    }
+
+    @keyframes blessingGlow {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* 梅花装饰 */
+    .plum-blossom {
+      position: fixed;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* 响应式 */
+    @media (max-width: 375px) {
+      .letter-paper {
+        padding: 24px 18px;
+      }
+      
+      .paragraph p {
+        font-size: 0.9rem;
+        line-height: 2;
+      }
+      
+      .year-title {
+        font-size: 1.3rem;
+      }
+      
+      .blessing-text {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .scroll-wrapper {
+        max-width: 480px;
+      }
+      
+      .letter-paper {
+        padding: 40px 36px;
+      }
+      
+      .paragraph p {
+        font-size: 1rem;
+      }
+    }
+
+    /* 减少动画 */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  
+  <div class="container">
+    <div class="scroll-wrapper">
+      <div class="scroll-top"></div>
+      
+      <div class="letter-paper">
+        <!-- 角落装饰 -->
+        <div class="corner corner-tl">
+          <svg viewBox="0 0 40 40">
+            <path d="M2 38 L2 2 L38 2" />
+            <path d="M8 32 L8 8 L32 8" opacity="0.5" />
+          </svg>
+        </div>
+        <div class="corner corner-tr">
+          <svg viewBox="0 0 40 40">
+            <path d="M2 38 L2 2 L38 2" />
+            <path d="M8 32 L8 8 L32 8" opacity="0.5" />
+          </svg>
+        </div>
+        <div class="corner corner-bl">
+          <svg viewBox="0 0 40 40">
+            <path d="M2 38 L2 2 L38 2" />
+            <path d="M8 32 L8 8 L32 8" opacity="0.5" />
+          </svg>
+        </div>
+        <div class="corner corner-br">
+          <svg viewBox="0 0 40 40">
+            <path d="M2 38 L2 2 L38 2" />
+            <path d="M8 32 L8 8 L32 8" opacity="0.5" />
+          </svg>
+        </div>
+
+        <!-- 标题 -->
+        <div class="header">
+          <div class="year-title">岁次丙午</div>
+          <div class="divider">
+            <span class="divider-line"></span>
+            <span class="divider-symbol">元正贺启</span>
+            <span class="divider-line"></span>
+          </div>
+        </div>
+
+        <!-- 称谓 -->
+        <div class="salutation">
+          <p>臣甘昭林顿首再拜，谨奉书于张老师函丈：</p>
+        </div>
+
+        <!-- 正文 -->
+        <div class="paragraph">
+          <p>伏以岁次丙午，节届元正。斗柄回寅，启三阳之泰运；东风解冻，应万物之春晖。恭惟老师道承洙泗，学贯羲姚。绛帐风清，坐照六经之蕴；杏坛日暖，长流四序之和。仰北斗以瞻依，望西山而颂祷。</p>
+        </div>
+
+        <div class="paragraph">
+          <p>念自抠衣阶下，侍坐函中。时承面命之殷，屡荷心传之密。春风座里，常沾化雨之滋；夜雪窗间，每沐清辉之照。虽智愚之殊质，均陶铸以成材。感荷深恩，铭镌肺腑。</p>
+        </div>
+
+        <div class="paragraph">
+          <p>兹当爆竹驱傩之候，正桃符换岁之辰。敬献椒花，用申芹曝。伏愿琴书养粹，履端肇祥。教泽长流，等江河之浩浩；寿康永驻，齐嵩岳之巍巍。椿萱并茂于兰阶，棠棣交辉于桂苑。四时佳兴，常同沂水春风；百福来绥，永作士林模范。</p>
+        </div>
+
+        <div class="paragraph">
+          <p>临楮不胜瞻依之至，谨奉启以闻。伏惟珍摄，无任虔祷。</p>
+        </div>
+
+        <!-- 落款 -->
+        <div class="signature">
+          <p>受业甘昭林 诚惶诚恐 顿首谨言</p>
+        </div>
+
+        <!-- 印章 -->
+        <div class="seal-container">
+          <div class="seal">
+            <span class="seal-text">甘印</span>
+          </div>
+        </div>
+
+        <!-- 日期 -->
+        <div class="date-footer">
+          <p>岁次丙午年正月初一</p>
+        </div>
+      </div>
+
+      <div class="scroll-bottom"></div>
+    </div>
+
+    <!-- 祝福语 -->
+    <div class="blessing">
+      <span class="blessing-text">新春大吉</span>
+    </div>
+  </div>
+
+  <script>
+    // 背景粒子 - 飘落的花瓣
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let petals = [];
+    let animationId = null;
+    
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    // 创建花瓣
+    function createPetal() {
+      const size = Math.random() * 8 + 4;
+      return {
+        x: Math.random() * width,
+        y: -20,
+        size: size,
+        speedY: Math.random() * 1 + 0.5,
+        speedX: Math.random() * 0.5 - 0.25,
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.02,
+        opacity: Math.random() * 0.4 + 0.2,
+        color: Math.random() > 0.5 ? '#c9a227' : '#b33a3a',
+        swing: Math.random() * Math.PI * 2,
+        swingSpeed: Math.random() * 0.02 + 0.01
+      };
+    }
+
+    // 绘制花瓣
+    function drawPetal(petal) {
+      ctx.save();
+      ctx.translate(petal.x, petal.y);
+      ctx.rotate(petal.rotation);
+      ctx.globalAlpha = petal.opacity;
+
+      // 花瓣形状
+      ctx.beginPath();
+      const s = petal.size;
+      ctx.moveTo(0, -s);
+      ctx.bezierCurveTo(s * 0.8, -s * 0.5, s * 0.8, s * 0.5, 0, s);
+      ctx.bezierCurveTo(-s * 0.8, s * 0.5, -s * 0.8, -s * 0.5, 0, -s);
+      ctx.fillStyle = petal.color;
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    // 更新花瓣位置
+    function updatePetal(petal) {
+      petal.swing += petal.swingSpeed;
+      petal.x += petal.speedX + Math.sin(petal.swing) * 0.5;
+      petal.y += petal.speedY;
+      petal.rotation += petal.rotationSpeed;
+      
+      return petal.y < height + 20;
+    }
+
+    // 动画循环
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      // 绘制背景渐变光晕
+      const gradient = ctx.createRadialGradient(
+        width / 2, height / 2, 0,
+        width / 2, height / 2, Math.max(width, height) * 0.6
+      );
+      gradient.addColorStop(0, 'rgba(201, 162, 39, 0.03)');
+      gradient.addColorStop(0.5, 'rgba(139, 69, 19, 0.02)');
+      gradient.addColorStop(1, 'rgba(13, 10, 8, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+
+      // 添加新花瓣
+      if (Math.random() < 0.03 && petals.length < 50) {
+        petals.push(createPetal());
+      }
+
+      // 更新和绘制花瓣
+      petals = petals.filter(petal => {
+        drawPetal(petal);
+        return updatePetal(petal);
+      });
+
+      animationId = requestAnimationFrame(animate);
+    }
+
+    // 初始化
+    function init() {
+      resize();
+      
+      if (!prefersReducedMotion) {
+        // 预生成一些花瓣
+        for (let i = 0; i < 20; i++) {
+          const petal = createPetal();
+          petal.y = Math.random() * height;
+          petals.push(petal);
+        }
+        animate();
+      } else {
+        // 只绘制静态背景光晕
+        const gradient = ctx.createRadialGradient(
+          width / 2, height / 2, 0,
+          width / 2, height / 2, Math.max(width, height) * 0.6
+        );
+        gradient.addColorStop(0, 'rgba(201, 162, 39, 0.03)');
+        gradient.addColorStop(1, 'rgba(13, 10, 8, 0)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      resize();
+    });
+
+    // 页面可见性处理
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      } else if (!document.hidden && !prefersReducedMotion && !animationId) {
+        animate();
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>
